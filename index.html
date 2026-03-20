@@ -5,71 +5,106 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tienda de Productos</title>
 <style>
-    body { font-family: Arial; background-color: #f5f5f5; margin:0; padding:0; }
-    .banner { display:flex; justify-content:center; gap:20px; background:#fff; padding:15px 0; font-weight:bold; font-size:18px; }
-    .products { display:flex; flex-wrap:wrap; justify-content:center; padding:20px; gap:20px; }
-    .product-card { background:#fff; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.15); padding:15px; width:220px; text-align:center; }
-    .product-card img { width:100%; border-radius:5px; }
-    .product-price { color:#e91e63; font-size:18px; margin:10px 0; }
-    .add-btn { background:#4caf50; color:#fff; padding:8px 12px; border:none; border-radius:5px; cursor:pointer; }
-    .reviews { background:#fff; padding:20px; margin:20px; border-radius:8px; }
-    .review-item { border-bottom:1px solid #ddd; padding:10px 0; }
-    .whatsapp { position:fixed; bottom:20px; right:20px; background:#25D366; color:#fff; width:50px; height:50px; border-radius:50%; display:flex; justify-content:center; align-items:center; font-size:24px; cursor:pointer; }
+body { font-family: Arial; background:#f5f5f5; margin:0; padding:0; }
+.banner { display:flex; justify-content:center; gap:20px; background:#fff; padding:15px 0; font-weight:bold; font-size:18px; }
+.products { display:flex; flex-wrap:wrap; justify-content:center; padding:20px; gap:20px; }
+.product-card { background:#fff; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.15); padding:15px; width:220px; text-align:center; }
+.product-card img { width:100%; border-radius:5px; }
+.product-price { color:#e91e63; font-size:18px; margin:10px 0; }
+.add-btn { background:#4caf50; color:#fff; padding:8px 12px; border:none; border-radius:5px; cursor:pointer; }
+.reviews { background:#fff; padding:20px; margin:20px; border-radius:8px; }
+.review-item { border-bottom:1px solid #ddd; padding:10px 0; }
+.whatsapp { position:fixed; bottom:20px; right:20px; background:#25D366; color:#fff; width:50px; height:50px; border-radius:50%; display:flex; justify-content:center; align-items:center; font-size:24px; cursor:pointer; }
 </style>
 </head>
 <body>
 
 <div class="banner">
-    <div>Todos</div><div>Dama:</div><div>Caballero:</div><div>Unisex:</div>
+<div>Todos</div><div>Dama:</div><div>Caballero:</div><div>Unisex:</div>
 </div>
 
 <div class="products" id="products"></div>
 
-<div class="reviews" id="reviews"><h3>Reseñas de Clientes</h3></div>
+<div class="reviews" id="reviews">
+<h3>Reseñas de Clientes</h3>
+</div>
 
-<div class="whatsapp" onclick="window.open('https://wa.me/1234567890','_blank')">📱</div>
+<div class="whatsapp" onclick="window.open('https://wa.me/524421311997','_blank')">📱</div>
 
 <script>
-const products = [
-    {name:"Perfume A", price:550, stock:5, img:"https://via.placeholder.com/200"},
-    {name:"Perfume B", price:1500, stock:2, img:"https://via.placeholder.com/200"},
-    {name:"Perfume C", price:2500, stock:3, img:"https://via.placeholder.com/200"}
-];
-const productsContainer = document.getElementById('products');
-products.forEach((p,index)=>{
-    const card=document.createElement('div');
-    card.className='product-card';
-    card.innerHTML=`<img src="${p.img}" alt="${p.name}">
-    <div class="product-price">MX.${p.price.toLocaleString('es-MX',{minimumFractionDigits:2})}</div>
-    <button class="add-btn" onclick="addToCart(${index})">Agregar al Carrito</button>`;
-    productsContainer.appendChild(card);
+// --- Google Sheet CSV link (publish your sheet as CSV) ---
+const sheetCSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSLO4uZBbBt3BC2ukZH6WPEnh1Taw_JEQSUAg7lVF2tmXgGH1Hb19ggbFTvTVGem2yO480fc5yEJWRR/pub?output=csv';
+
+// Fetch data from Google Sheet
+fetch(sheetCSV)
+.then(res => res.text())
+.then(data => {
+    const products = [];
+    const rows = data.split('\n').slice(1); // skip header
+    rows.forEach(row => {
+        const cols = row.split(',');
+        if(cols.length >= 4){
+            products.push({
+                name: cols[0],
+                price: parseFloat(cols[1]),
+                stock: parseInt(cols[2]),
+                img: cols[3]
+            });
+        }
+    });
+    renderProducts(products);
 });
 
-const cart=[];
-function addToCart(i){
-    const product=products[i];
-    const count = cart.filter(x => x===i).length;
-    if(count>=product.stock){
+// Render Products
+function renderProducts(products){
+    const container = document.getElementById('products');
+    products.forEach((p,i)=>{
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        card.innerHTML = `
+            <img src="${p.img}" alt="${p.name}">
+            <div class="product-name">${p.name}</div>
+            <div class="product-price">MX.${p.price.toLocaleString('es-MX',{minimumFractionDigits:2})}</div>
+            <button class="add-btn" onclick="addToCart(${i})">Agregar al Carrito</button>
+        `;
+        container.appendChild(card);
+    });
+
+    // Store products globally for cart
+    window.products = products;
+}
+
+// Cart & Stock Alert
+const cart = [];
+function addToCart(index){
+    const product = window.products[index];
+    const cartCount = cart.filter(c => c===index).length;
+    if(cartCount >= product.stock){
         alert('Este producto no está disponible en stock.');
         return;
     }
-    cart.push(i);
-    alert(product.name+' agregado al carrito.');
+    cart.push(index);
+    alert(`${product.name} agregado al carrito.`);
 }
 
+// Customer Reviews (static)
 const reviews = [
-    "Excelente producto.",
-    "Muy buena calidad.",
-    "Llegó rápido.",
-    "Súper recomendado.",
-    "Perfecto en todo.",
-    "Volveré a comprar."
+"Excelente producto, muy recomendable.",
+"Llegó rápido y en buen estado.",
+"Calidad superior al precio.",
+"Muy buen servicio al cliente.",
+"El tamaño es perfecto.",
+"Repetiré la compra seguro.",
+"Entrega rápida y sin problemas.",
+"Producto tal cual la descripción.",
+"Totalmente recomendado."
 ];
+
 const reviewsContainer = document.getElementById('reviews');
 reviews.forEach(r=>{
-    const div=document.createElement('div');
+    const div = document.createElement('div');
     div.className='review-item';
-    div.innerText=r;
+    div.innerText = r;
     reviewsContainer.appendChild(div);
 });
 </script>
