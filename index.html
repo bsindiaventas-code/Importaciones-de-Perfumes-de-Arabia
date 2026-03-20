@@ -26,7 +26,6 @@ padding:6px 10px; border-radius:5px; font-weight:bold; text-decoration:none;
 .facebook {background:#1877F2; color:white;}
 .whatsapp {background:#25D366; color:white;}
 .phone {background:#FFD700; color:black;}
-
 .direccion {background:gold; color:black; cursor:pointer;}
 
 #categories {text-align:center; margin:15px;}
@@ -62,6 +61,10 @@ padding:5px; cursor:pointer;
 
 #reviews {padding:10px;}
 .review {border-bottom:1px solid gold; margin:8px 0;}
+
+input, select {
+width:100%; padding:8px; margin:5px 0; border-radius:5px; border:none;
+}
 
 </style>
 </head>
@@ -111,11 +114,60 @@ padding:5px; cursor:pointer;
 </a>
 </div>
 
+<!-- REVIEWS -->
+<div id="reviews">
+<h3>Opiniones de Clientes ⭐</h3>
+
+<div id="reviews-list"></div>
+
+<input id="name" placeholder="Tu nombre">
+<select id="stars">
+<option value="5">⭐⭐⭐⭐⭐</option>
+<option value="4">⭐⭐⭐⭐</option>
+<option value="3">⭐⭐⭐</option>
+<option value="2">⭐⭐</option>
+<option value="1">⭐</option>
+</select>
+<input id="comment" placeholder="Tu comentario">
+<button onclick="addReview()">Enviar Reseña</button>
+</div>
+
 <script>
 
 const sheetURL="https://opensheet.elk.sh/1jTuw2fhX_7hVQvp8EsPFIo4b37si6xdqGKDTDT1ZSW8/Perfumes";
 
 let productsData=[], cart=[], shipping=200;
+
+// DEMO REVIEWS (पहले से दिखेंगे)
+let reviewsData = JSON.parse(localStorage.getItem("reviews")) || [
+ {n:"Carlos",c:"Excelente perfume 🔥",s:5},
+ {n:"Maria",c:"Muy rico aroma 😍",s:5},
+ {n:"Juan",c:"Buena calidad",s:4}
+];
+
+function renderReviews(){
+ let html="";
+ reviewsData.forEach(r=>{
+  html+=`<div class="review"><b>${r.n}</b> ${"⭐".repeat(r.s)}<br>${r.c}</div>`;
+ });
+ document.getElementById("reviews-list").innerHTML=html;
+}
+renderReviews();
+
+function addReview(){
+ let n=document.getElementById("name").value;
+ let c=document.getElementById("comment").value;
+ let s=parseInt(document.getElementById("stars").value);
+
+ if(!n || !c) return alert("Completa todo");
+
+ reviewsData.push({n,c,s});
+ localStorage.setItem("reviews",JSON.stringify(reviewsData));
+ renderReviews();
+
+ document.getElementById("name").value="";
+ document.getElementById("comment").value="";
+}
 
 function getPrice(item){
  let p=item["Precio"]||"0";
@@ -136,21 +188,12 @@ function renderProducts(data){
  let img=item["Imagen"]||"";
  let stock=parseInt(item["Stock"])||0;
 
- let stockText="",color="green";
-
- if(stock==0){
-  stockText="Agotado";
-  color="red";
- } else {
-  stockText="Disponible: "+stock+" piezas";
- }
-
  html+=`
  <div class="product">
  <img src="${img}">
  <h2>${nombre}</h2>
  <p>$${precio}</p>
- <p style="color:${color};">${stockText}</p>
+ <p>Disponible: ${stock} piezas</p>
  <button onclick="addToCart('${nombre}',${precio},${stock})">Agregar</button>
  </div>`;
  });
