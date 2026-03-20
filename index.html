@@ -20,6 +20,8 @@ header h1 {color:gold; font-size:18px; margin:5px 0;}
 .direccion {background:gold; color:black; cursor:pointer; transition:0.3s;}
 .direccion:hover {opacity:0.8; transform:scale(1.02);}
 /* CATEGORIES */
+#search-container {text-align:center; margin:10px;}
+#search-container input {padding:8px; width:200px; border-radius:5px; border:none;}
 #categories {text-align:center; margin:15px;}
 button {padding:10px 15px; margin:5px; border:none; border-radius:5px; background:linear-gradient(45deg,gold,#ffd700); cursor:pointer; font-weight:bold; transition:0.3s;}
 button:hover {background:linear-gradient(45deg,#ffd700,gold); transform:scale(1.05);}
@@ -65,6 +67,11 @@ input:focus, select:focus {outline:none; box-shadow:0 0 5px gold;}
 </span>
 </div>
 </header>
+
+<!-- SEARCH -->
+<div id="search-container">
+<input type="text" id="search-input" placeholder="Buscar producto...">
+</div>
 
 <!-- CATEGORIES -->
 <div id="categories">
@@ -132,6 +139,7 @@ fetch(sheetURL).then(r=>r.json()).then(data=>{
  renderProducts(data);
 });
 
+// RENDER PRODUCTS
 function renderProducts(data){
  let html="";
  data.forEach(item=>{
@@ -161,6 +169,7 @@ function renderProducts(data){
  document.getElementById("products").innerHTML=html;
 }
 
+// CART FUNCTIONS
 function addToCart(name,price,stock){
  let count=cart.filter(i=>i.name===name).length;
  if(count>=stock){ alert("No hay más stock disponible"); return; }
@@ -189,11 +198,13 @@ function remove(i){ cart.splice(i,1); renderCart(); }
 document.getElementById("cart-toggle").onclick=()=>document.getElementById("cart").classList.toggle("open");
 document.getElementById("cart-close").onclick=()=>document.getElementById("cart").classList.remove("open");
 
+// FILTER CATEGORIES
 function filterCategory(cat){
  if(cat=="All") renderProducts(productsData);
  else renderProducts(productsData.filter(p=>p["Categoria"]==cat));
 }
 
+// ADD REVIEW
 function addReview(){
  let n=document.getElementById("name").value;
  let c=document.getElementById("comment").value;
@@ -202,6 +213,14 @@ function addReview(){
  `<div class="review"><b>${n}</b> ${"⭐".repeat(s)}<br>${c}</div>`;
  document.getElementById("name").value=""; document.getElementById("comment").value="";
 }
+
+// SEARCH FUNCTIONALITY
+document.getElementById("search-input").addEventListener("input", function() {
+  let query = this.value.toLowerCase();
+  let filtered = productsData.filter(p => p["Nombre"].toLowerCase().includes(query));
+  renderProducts(filtered);
+});
+
 </script>
 
 </body>
