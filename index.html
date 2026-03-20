@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -25,6 +24,8 @@ header h1 { font-size:24px; font-weight:bold; color:gold; }
 
 #search { width:90%; padding:10px; margin:0 auto 20px auto; display:block; border-radius:5px; border:none; font-size:16px; }
 
+#shipping-banner { text-align:center; background:#1E90FF; color:white; padding:10px; font-weight:bold; margin-bottom:10px; border-radius:5px; }
+
 #products { display:grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap:15px; justify-items:center; padding:0 10px; }
 .product { background:#111; border:1px solid gold; border-radius:10px; padding:15px; text-align:center; transition: transform 0.3s, box-shadow 0.3s; }
 .product img { width:200px; height:auto; border-radius:5px; transition:0.3s; }
@@ -35,7 +36,7 @@ button { background:gold; color:black; padding:8px 10px; border:none; cursor:poi
 button:hover { background:#ffd700cc; transform:scale(1.05); }
 
 #reviews { padding:15px; margin:20px; background:#111; border:1px solid gold; border-radius:10px; }
-.review { border-bottom:1px solid gold; padding:5px 0; }
+.review { border-bottom:1px solid gold; padding:5px 0; background:#1a1a1a; border-radius:5px; margin-bottom:5px; }
 .review:last-child { border-bottom:none; }
 
 #review-form { margin-top:15px; }
@@ -50,30 +51,30 @@ button:hover { background:#ffd700cc; transform:scale(1.05); }
 #cart h3 { text-align:center; margin-bottom:10px; color:gold; text-shadow: 1px 1px 2px #000; }
 #cart-items p { margin:5px 0; display:flex; justify-content: space-between; align-items: center; }
 .remove-btn { background:#ff4444; color:white; border:none; border-radius:3px; padding:2px 5px; cursor:pointer; margin-left:5px; }
+
 #cart p strong { background:#FFD700; color:black; padding:3px 5px; border-radius:3px; }
 #cart-close { cursor:pointer; float:right; background:#ff4444; color:white; border:none; border-radius:5px; padding:5px 10px; font-weight:bold; transition:0.3s; }
 #cart-close:hover { transform:scale(1.05); }
 
-#shipping-banner { text-align:center; background:#1E90FF; color:white; padding:10px; font-weight:bold; margin:10px 0; border-radius:5px; animation: moveBanner 5s infinite alternate; }
-@keyframes moveBanner { from {transform:translateX(0);} to {transform:translateX(20px);} }
-
 #footer { text-align:center; padding:15px; margin-top:40px; border-top:1px solid gold; color:gold; font-size:14px; }
 #footer p { margin:3px 0; }
 
-@media(max-width:600px){
-#cart { width:90%; right:-95%; }
-#products { grid-template-columns: repeat(auto-fit,minmax(150px,1fr)); }
-header { flex-direction:column; gap:10px; text-align:center; }
-.header-right { justify-content:center; }
-} </style>
+.stock { font-weight:bold; margin-top:5px; }
 
+@media(max-width:600px){
+  #cart { width:90%; right:-95%; }
+  #products { grid-template-columns: repeat(auto-fit,minmax(150px,1fr)); }
+  header { flex-direction:column; gap:10px; text-align:center; }
+  .header-right { justify-content:center; }
+}
+</style>
 </head>
 <body>
 
 <header>
   <h1>Perfume Árabe Original Importación</h1>
   <div class="header-right">
-    <a href="https://www.instagram.com/c_masala" target="_blank" class="instagram-btn-header">Instagram</a>
+    <a href="https://www.instagram.com/c_masala/" target="_blank" class="instagram-btn-header">Instagram</a>
     <a href="https://www.facebook.com/bsindiamexico/" target="_blank" class="facebook-btn-header">Facebook</a>
     <span class="direccion" onclick="window.open('https://goo.gl/maps/jQ5K1bR2xZs6K8xF9','_blank')">🏠 Dirección: Soriana 200, 12 de Octubre Local 22, Nuevo Celaya, 38027 Celaya, Gto. Mexico</span>
   </div>
@@ -89,6 +90,7 @@ header { flex-direction:column; gap:10px; text-align:center; }
 </div>
 
 <input type="text" id="search" placeholder="Buscar perfume...">
+
 <div id="products"></div>
 
 <div id="reviews">
@@ -125,61 +127,141 @@ header { flex-direction:column; gap:10px; text-align:center; }
 </div>
 
 <script>
-const whatsappNumber = '+524421311997';
-const sheetURL = 'https://opensheet.elk.sh/1jTuw2fhX_7hVQvp8EsPFIo4b37si6xdqGKDTDT1ZSW8/Perfumes';
-let productsData = [], filteredData = [], cart = [], reviewsData = JSON.parse(localStorage.getItem('reviews')||'[]');
+// Número a letras
+function numeroALetras(num){
+    const unidades = ['cero','uno','dos','tres','cuatro','cinco','seis','siete','ocho','nueve'];
+    const decenas = ['','diez','veinte','treinta','cuarenta','cincuenta','sesenta','setenta','ochenta','noventa'];
+    if(num<=9) return unidades[num];
+    if(num<=99) return decenas[Math.floor(num/10)] + (num%10>0 ? ' y ' + unidades[num%10]:'');
+    return num;
+}
+
+// Productos
+const sheetURL = "https://opensheet.elk.sh/1jTuw2fhX_7hVQvp8EsPFIo4b37si6xdqGKDTDT1ZSW8/Perfumes";
+let productsData = [];
+let filteredData = [];
+let cart = [];
 const shipping = 200;
 
-function numeroALetras(num){ const unidades=['cero','uno','dos','tres','cuatro','cinco','seis','siete','ocho','nueve']; const decenas=['','diez','veinte','treinta','cuarenta','cincuenta','sesenta','setenta','ochenta','noventa']; if(num<=9) return unidades[num]; if(num<=99) return decenas[Math.floor(num/10)]+' y '+unidades[num%10]; return num; }
+fetch(sheetURL).then(res=>res.json()).then(data=>{
+  productsData = data; filteredData = data; renderProducts(filteredData);
+}).catch(err=>console.log(err));
 
-fetch(sheetURL).then(res=>res.json()).then(data=>{ productsData=data; filteredData=data; renderProducts(filteredData); }).catch(err=>console.log(err));
+function getPrice(item){
+  let precio = parseFloat(item["Precio"]) || 0;
+  return precio.toFixed(2);
+}
 
-function getPrice(item){ let precio=parseFloat(item['Precio']||0); return isNaN(precio)?0:precio; }
-
-function renderProducts(data){ const productsDiv=document.getElementById('products'); productsDiv.innerHTML='';
+function renderProducts(data){
+  const productsDiv = document.getElementById("products");
+  productsDiv.innerHTML = "";
   data.forEach(item=>{
-    let nombre=item['Nombre']||'Perfume';
-    let precio=getPrice(item);
-    let imagen=item['Imagen']||'';
-    let descripcion=item['Descripcion']||'';
-    let categoria=item['Categoria']||'Unisex';
-    let stock=parseInt(item['Stock']||0);
+    let nombre = item["Nombre"] || "Perfume";
+    let precio = getPrice(item);
+    let imagen = item["Imagen"] || "";
+    let descripcion = item["Descripcion"] || "";
+    let categoria = item["Categoria"] || "Unisex";
+    let stock = parseInt(item["Stock"]) || 0;
 
-    const productDiv=document.createElement('div');
-    productDiv.className='product';
+    const productDiv = document.createElement("div");
+    productDiv.className="product";
     productDiv.innerHTML=`
       <img src="${imagen}" onerror="this.src='https://via.placeholder.com/200'">
       <h2>${nombre}</h2>
-      <p><strong>Precio:</strong> $${precio.toLocaleString('es-ES', {minimumFractionDigits:2})}</p>
-      <p><strong>Stock:</strong> <span class='stock' style='color:${stock<=0?'red':stock<=2?'#FF4500':stock<=5?'orange':'green'}'>${stock<=0?'Agotado':stock<=2?'Solo '+stock+' disponible':stock<=5?'Pocas unidades: '+stock:'Disponible: '+stock}</span></p>
+      <p><strong>MX.${precio}</strong></p>
+      <p class="stock" style="color:${stock===0?'red':stock<=2?'#FF4500':stock<=5?'orange':'green'}">${stock===0?'Agotado':stock<=2?'Poco stock':'Disponible: '+stock}</p>
       <p><strong>Descripción:</strong> ${descripcion}</p>
       <p><strong>Categoria:</strong> ${categoria}</p>
       <button class="add-btn">Agregar al carrito</button>
     `;
-    productDiv.querySelector('.add-btn').addEventListener('click',()=>addToCart(nombre, precio));
+    productDiv.querySelector(".add-btn").addEventListener("click",()=>{addToCart(nombre,item);});
     productsDiv.appendChild(productDiv);
   });
 }
 
-function addToCart(nombre, precio){ cart.push({nombre, precio}); renderCart(); document.getElementById('cart').classList.add('open'); }
-function removeFromCart(index){ cart.splice(index,1); renderCart(); }
-function renderCart(){ const cartItemsDiv=document.getElementById('cart-items'); cartItemsDiv.innerHTML=''; let subtotal=0;
- cart.forEach((item,i)=>{ subtotal+=item.precio; const p=document.createElement('p'); p.innerHTML=`${item.nombre} - $${item.precio.toLocaleString('es-ES', {minimumFractionDigits:2})} <button class='remove-btn' onclick='removeFromCart(${i})'>❌</button>`; cartItemsDiv.appendChild(p); });
- let total=subtotal+shipping; document.getElementById('total').textContent=total.toLocaleString('es-ES', {minimumFractionDigits:2});
- document.getElementById('total-letras').textContent=`Total en letras: ${numeroALetras(total)} pesos`;
- const checkoutBtn=document.getElementById('checkout'); if(cart.length>0){ let msg=`Hola,%20quiero%20comprar%20estos%20perfumes:%0A`; cart.forEach((item,i)=>{msg+=`${i+1}. ${item.nombre} - $${item.precio.toLocaleString('es-ES', {minimumFractionDigits:2})}%0A`;}); msg+=`Subtotal: $${subtotal}%0AEnvío: $${shipping}%0ATotal: $${total.toLocaleString('es-ES', {minimumFractionDigits:2})}`; checkoutBtn.href=`https://wa.me/${whatsappNumber}?text=${msg}`; } else checkoutBtn.href='#';
+// Cart functions
+function addToCart(nombre,item){
+  let precioNum = parseFloat(getPrice(item));
+  cart.push({nombre, precio:precioNum});
+  renderCart();
+  document.getElementById("cart").classList.add("open");
 }
 
-document.getElementById('cart-toggle').addEventListener('click',()=>document.getElementById('cart').classList.toggle('open'));
-document.getElementById('cart-close').addEventListener('click',()=>document.getElementById('cart').classList.remove('open'));
+function removeFromCart(index){
+  cart.splice(index,1);
+  renderCart();
+}
 
-function filterCategory(cat){ filteredData=cat==='All'?productsData:productsData.filter(p=>(p['Categoria']||'Unisex').toLowerCase()===cat.toLowerCase()); renderProducts(filteredData); }
+function renderCart(){
+  const cartItemsDiv = document.getElementById("cart-items");
+  cartItemsDiv.innerHTML="";
+  let subtotal = 0;
+  cart.forEach((item,index)=>{
+    subtotal += item.precio;
+    const p = document.createElement("p");
+    p.innerHTML=`${item.nombre} - MX.${item.precio.toFixed(2)} <button class="remove-btn" onclick="removeFromCart(${index})">❌</button>`;
+    cartItemsDiv.appendChild(p);
+  });
+  let total = subtotal+shipping;
+  document.getElementById("total").textContent=total.toFixed(2);
+  document.getElementById("total-letras").textContent=`Total en letras: ${numeroALetras(total)} pesos`;
 
-document.getElementById('search').addEventListener('input',function(e){ let searchTerm=e.target.value.toLowerCase(); renderProducts(filteredData.filter(p=>(p['Nombre']||'').toLowerCase().includes(searchTerm))); });
+  const checkoutBtn = document.getElementById("checkout");
+  if(cart.length>0){
+    let msg="Hola,%20quiero%20comprar%20estos%20perfumes:%0A";
+    cart.forEach((item,i)=>{msg+=`${i+1}. ${item.nombre} - MX.${item.precio.toFixed(2)}%0A`;});
+    msg+=`Subtotal: MX.${subtotal.toFixed(2)}%0AEnvío: MX.${shipping}%0ATotal: MX.${total.toFixed(2)}`;
+    checkoutBtn.href=`https://wa.me/521524421311997?text=${msg}`;
+  } else checkoutBtn.href="#";
+}
 
-function renderReviews(){ const reviewsList=document.getElementById('reviews-list'); reviewsList.innerHTML=''; let showReviews=reviewsData.slice(-10); showReviews.forEach(r=>{ const div=document.createElement('div'); div.className='review'; div.innerHTML=`<strong style='color:gold'>${r.nombre}:</strong> ${'⭐'.repeat(r.estrellas)} <span style='color:#FFD700'>${r.comentario}</span>`; reviewsList.appendChild(div); });}
+// Cart toggle
+document.getElementById("cart-toggle").addEventListener("click",()=>{document.getElementById("cart").classList.toggle("open");});
+document.getElementById("cart-close").addEventListener("click",()=>{document.getElementById("cart").classList.remove("open");});
+
+// Category filter
+function filterCategory(cat){
+  if(cat==="All") filteredData=productsData;
+  else filteredData=productsData.filter(p=>(p["Categoria"]||"Unisex").toLowerCase()===cat.toLowerCase());
+  renderProducts(filteredData);
+}
+
+// Search
+document.getElementById("search").addEventListener("input",function(e){
+  let searchTerm = e.target.value.toLowerCase();
+  renderProducts(filteredData.filter(p=>(p["Nombre"]||"").toLowerCase().includes(searchTerm)));
+});
+
+// Reviews
+const reviewsList=document.getElementById("reviews-list");
+let reviewsData=JSON.parse(localStorage.getItem("reviews")||"[]");
+
+function renderReviews(){
+  reviewsList.innerHTML="";
+  const lastReviews = reviewsData.slice(-10).reverse();
+  lastReviews.forEach(r=>{
+    const div=document.createElement("div");
+    div.className="review";
+    div.innerHTML=`<strong>${r.nombre}:</strong> ${"⭐".repeat(r.estrellas)} <em>${r.comentario}</em>`;
+    reviewsList.appendChild(div);
+  });
+}
 renderReviews();
-document.getElementById('submit-review').addEventListener('click',()=>{ const nombre=document.getElementById('review-name').value.trim(); const comentario=document.getElementById('review-comment').value.trim(); const estrellas=parseInt(document.getElementById('review-stars').value); if(nombre && comentario){ const newReview={nombre,comentario,estrellas,fecha:new Date().toISOString()}; reviewsData.push(newReview); localStorage.setItem('reviews',JSON.stringify(reviewsData)); renderReviews(); alert('¡Gracias por tu reseña! ✅'); document.getElementById('review-name').value=''; document.getElementById('review-comment').value=''; } else alert('Por favor completa todos los campos.');});
+
+document.getElementById("submit-review").addEventListener("click",()=>{
+  const nombre=document.getElementById("review-name").value.trim();
+  const comentario=document.getElementById("review-comment").value.trim();
+  const estrellas=parseInt(document.getElementById("review-stars").value);
+  if(nombre && comentario){
+    const newReview={nombre,comentario,estrellas,fecha:new Date().toISOString()};
+    reviewsData.push(newReview);
+    localStorage.setItem("reviews",JSON.stringify(reviewsData));
+    renderReviews();
+    alert("Gracias por tu reseña! ✅");
+    document.getElementById("review-name").value="";
+    document.getElementById("review-comment").value="";
+  } else alert("Por favor completa todos los campos.");
+});
 </script>
 
 </body>
