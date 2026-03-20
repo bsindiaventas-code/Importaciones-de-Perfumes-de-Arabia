@@ -6,91 +6,87 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-body {font-family:Arial; background:#0c0c0c; color:white; margin:0;}
-
-header {
-display:flex; justify-content:space-between; flex-wrap:wrap;
-padding:15px; background:#111; border-bottom:2px solid gold;
-}
-header h1 {color:gold;}
-
-.header-right {
-display:flex; gap:10px; flex-wrap:wrap;
-}
-
-.header-right a, .header-right span {
-padding:6px 10px; border-radius:5px; font-weight:bold; text-decoration:none;
-}
-
+body {font-family:Arial,sans-serif; background:#0c0c0c; color:white; margin:0;}
+header {display:flex; justify-content:space-between; flex-wrap:wrap; padding:15px; background:#111; border-bottom:2px solid gold;}
+header h1 {color:gold; font-size:22px;}
+.header-right {display:flex; gap:10px; flex-wrap:wrap;}
+.header-right a, .header-right span {padding:6px 10px; border-radius:5px; font-weight:bold; text-decoration:none;}
 .instagram {background:#E1306C; color:white;}
 .facebook {background:#1877F2; color:white;}
 .whatsapp {background:#25D366; color:white;}
 .phone {background:#FFD700; color:black;}
 .direccion {background:gold; color:black; cursor:pointer;}
 
+/* SHIPPING BANNER */
+.shipping-banner {
+background: linear-gradient(90deg, gold, orange);
+color: black;
+font-weight: bold;
+padding: 10px;
+text-align: center;
+overflow: hidden;
+white-space: nowrap;
+animation: scrollText 12s linear infinite;
+}
+@keyframes scrollText {0% {transform: translateX(100%);} 100% {transform: translateX(-100%);}}
+
+/* Categories */
 #categories {text-align:center; margin:15px;}
-button {padding:8px; margin:5px; border:none; border-radius:5px; background:gold; cursor:pointer;}
+button {padding:8px; margin:5px; border:none; border-radius:5px; background:gold; cursor:pointer; font-weight:bold;}
+button:hover {background:#ffd700cc;}
 
-#products {
-display:grid;
-grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
-gap:15px;
-padding:10px;
-}
-.product {background:#111; border:1px solid gold; padding:10px; text-align:center;}
-.product img {width:180px;}
+/* Products */
+#products {display:grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap:15px; padding:10px;}
+.product {background:#111; border:1px solid gold; border-radius:10px; padding:10px; text-align:center; transition:0.3s;}
+.product img {width:180px; border-radius:5px;}
+.product h2 {color:gold; margin:5px 0;}
+.product p {margin:3px 0;}
+.add-btn {padding:6px 10px; background:gold; color:black; border:none; border-radius:5px; font-weight:bold; cursor:pointer;}
+.add-btn:hover {background:#ffd700cc; transform:scale(1.05);}
 
-#cart-toggle {
-position:fixed; bottom:20px; right:20px;
-background:#00BFFF; color:white;
-padding:20px; border-radius:50%;
-font-size:26px; cursor:pointer;
-}
+/* Cart */
+#cart-toggle {position:fixed; bottom:20px; right:20px; background:#1E90FF; color:white; padding:22px 26px; font-size:28px; border-radius:50%; cursor:pointer; z-index:1001; transition:0.3s;}
+#cart-toggle:hover {transform:scale(1.2); box-shadow:0 0 30px #1E90FF;}
+#cart {position:fixed; top:10px; right:-400px; width:350px; max-height:85vh; overflow-y:auto; background:#222; border:2px solid gold; padding:15px; border-radius:10px; z-index:1000; box-shadow:0 0 30px gold; transition:0.5s;}
+#cart.open {right:15px;}
+#cart h3 {text-align:center; margin-bottom:10px; color:gold; text-shadow: 1px 1px 2px #000;}
+#cart-items p {margin:5px 0; display:flex; justify-content: space-between; align-items: center;}
+.remove-btn {background:#ff4444; color:white; border:none; border-radius:3px; padding:2px 5px; cursor:pointer; margin-left:5px;}
+#cart-close {cursor:pointer; float:right; background:#ff4444; color:white; border:none; border-radius:5px; padding:5px 10px; font-weight:bold; transition:0.3s;}
+#cart-close:hover {transform:scale(1.05);}
 
-#cart {
-position:fixed; right:-350px; top:10px;
-width:300px; background:#222;
-padding:10px; transition:0.5s;
-}
-#cart.open {right:10px;}
+/* Reviews */
+#reviews {padding:15px; margin:20px; background:#111; border:1px solid gold; border-radius:10px;}
+.review {border-bottom:1px solid gold; padding:5px 0;}
+.review:last-child {border-bottom:none;}
+#review-form input,#review-form textarea,#review-form select {width:100%; margin:5px 0; padding:8px; border-radius:5px; border:none;}
+#review-form button {width:100%; background:#1E90FF; color:white; font-weight:bold; padding:8px; border:none; border-radius:5px; cursor:pointer;}
+#review-form button:hover {background:#3399FF; transform:scale(1.05);}
 
-#cart-close {
-background:red; color:white; border:none;
-padding:5px; cursor:pointer;
-}
-
-#reviews {padding:10px;}
-.review {border-bottom:1px solid gold; margin:8px 0;}
-
-input, select {
-width:100%; padding:8px; margin:5px 0; border-radius:5px; border:none;
-}
-
+#footer {text-align:center; padding:15px; margin-top:40px; border-top:1px solid gold; color:gold; font-size:14px;}
+@media(max-width:600px){#products {grid-template-columns: repeat(auto-fit,minmax(150px,1fr));} header{flex-direction:column; gap:10px; text-align:center;} .header-right{justify-content:center;} #cart {width:90%; right:-95%;}}
 </style>
-</head>
 
+</head>
 <body>
 
 <header>
 <h1>Perfume Árabe Original Importación</h1>
-
 <div class="header-right">
-
 <a href="https://www.instagram.com/c_masala" target="_blank" class="instagram">Instagram</a>
-
 <a href="https://www.facebook.com/bsindiamexico/" target="_blank" class="facebook">Facebook</a>
-
 <a href="https://wa.me/524421311997" target="_blank" class="whatsapp">WhatsApp</a>
-
 <a href="tel:+524421311997" class="phone">📞 Llamar</a>
-
-<span class="direccion" onclick="window.open('https://www.google.com/maps/search/?api=1&query=Soriana+200+12+de+Octubre+Local+22+Nuevo+Celaya+38027+Celaya+Gto+Mexico')">
-📍 Soriana 200, 12 de Octubre Local 22, Nuevo Celaya, 38027 Celaya, Gto. Mexico
-</span>
-
+<span class="direccion" onclick="window.open('https://www.google.com/maps/search/?api=1&query=Soriana+200+12+de+Octubre+Local+22+Nuevo+Celaya+38027+Celaya+Gto+Mexico')">📍 Soriana 200, 12 de Octubre Local 22, Nuevo Celaya, 38027 Celaya, Gto. Mexico</span>
 </div>
 </header>
 
+<!-- SHIPPING BANNER -->
+<div class="shipping-banner">
+🚚 Tu pedido se envía al día hábil siguiente de tu compra | Envío rápido ⚡ | Entrega segura 🔒 | Compra con confianza 💯
+</div>
+
+<!-- Categories -->
 <div id="categories">
 <button onclick="filterCategory('All')">Todos</button>
 <button onclick="filterCategory('Dama')">Dama</button>
@@ -98,10 +94,11 @@ width:100%; padding:8px; margin:5px 0; border-radius:5px; border:none;
 <button onclick="filterCategory('Unisex')">Unisex</button>
 </div>
 
+<!-- Products -->
 <div id="products"></div>
 
+<!-- Cart -->
 <div id="cart-toggle">🛒</div>
-
 <div id="cart">
 <button id="cart-close">❌</button>
 <h3>Carrito</h3>
@@ -109,144 +106,107 @@ width:100%; padding:8px; margin:5px 0; border-radius:5px; border:none;
 <p>🚚 Envío: $200 (24 horas)</p>
 <p>🔄 No hay devoluciones</p>
 <p>Total: $<span id="total">0</span></p>
-<a id="checkout" target="_blank">
-<button style="background:#25D366;color:white;">Comprar por WhatsApp</button>
-</a>
+<a id="checkout" target="_blank"><button>Comprar por WhatsApp</button></a>
 </div>
 
-<!-- REVIEWS -->
+<!-- Reviews -->
 <div id="reviews">
 <h3>Opiniones de Clientes ⭐</h3>
-
 <div id="reviews-list"></div>
-
-<input id="name" placeholder="Tu nombre">
-<select id="stars">
+<div id="review-form">
+<input type="text" id="review-name" placeholder="Tu nombre" required>
+<textarea id="review-comment" placeholder="Tu comentario" required></textarea>
+<select id="review-stars">
 <option value="5">⭐⭐⭐⭐⭐</option>
 <option value="4">⭐⭐⭐⭐</option>
 <option value="3">⭐⭐⭐</option>
 <option value="2">⭐⭐</option>
 <option value="1">⭐</option>
 </select>
-<input id="comment" placeholder="Tu comentario">
-<button onclick="addReview()">Enviar Reseña</button>
+<button id="submit-review">Enviar Reseña</button>
+</div>
 </div>
 
-<script>
+<footer id="footer">
+<p>© 2026 Perfume Árabe Original Importación</p>
+</footer>
 
+<script>
+let productsData=[], filteredData=[], cart=[], shipping=200;
 const sheetURL="https://opensheet.elk.sh/1jTuw2fhX_7hVQvp8EsPFIo4b37si6xdqGKDTDT1ZSW8/Perfumes";
 
-let productsData=[], cart=[], shipping=200;
+fetch(sheetURL).then(res=>res.json()).then(data=>{productsData=data; filteredData=data; renderProducts(filteredData);}).catch(err=>console.log(err));
 
-// DEMO REVIEWS (पहले से दिखेंगे)
-let reviewsData = JSON.parse(localStorage.getItem("reviews")) || [
- {n:"Carlos",c:"Excelente perfume 🔥",s:5},
- {n:"Maria",c:"Muy rico aroma 😍",s:5},
- {n:"Juan",c:"Buena calidad",s:4}
-];
-
-function renderReviews(){
- let html="";
- reviewsData.forEach(r=>{
-  html+=`<div class="review"><b>${r.n}</b> ${"⭐".repeat(r.s)}<br>${r.c}</div>`;
- });
- document.getElementById("reviews-list").innerHTML=html;
-}
-renderReviews();
-
-function addReview(){
- let n=document.getElementById("name").value;
- let c=document.getElementById("comment").value;
- let s=parseInt(document.getElementById("stars").value);
-
- if(!n || !c) return alert("Completa todo");
-
- reviewsData.push({n,c,s});
- localStorage.setItem("reviews",JSON.stringify(reviewsData));
- renderReviews();
-
- document.getElementById("name").value="";
- document.getElementById("comment").value="";
-}
-
-function getPrice(item){
- let p=item["Precio"]||"0";
- p=p.toString().replace(/,/g,'');
- return Number(p)||0;
-}
-
-fetch(sheetURL).then(r=>r.json()).then(data=>{
- productsData=data;
- renderProducts(data);
-});
+function getPrice(item){let p=item["Precio"]||"0"; p=parseFloat(p); if(isNaN(p)) p=0; return p;}
 
 function renderProducts(data){
- let html="";
- data.forEach(item=>{
- let nombre=item["Nombre"]||"Perfume";
- let precio=getPrice(item);
- let img=item["Imagen"]||"";
- let stock=parseInt(item["Stock"])||0;
+const productsDiv=document.getElementById("products"); productsDiv.innerHTML="";
+data.forEach(item=>{
+let nombre=item["Nombre"]||"Perfume";
+let precio=getPrice(item);
+let imagen=item["Imagen"]||"https://via.placeholder.com/200";
+let descripcion=item["Descripcion"]||"";
+let categoria=item["Categoria"]||"Unisex";
+let stock=parseInt(item["Stock"])||0;
 
- html+=`
- <div class="product">
- <img src="${img}">
- <h2>${nombre}</h2>
- <p>$${precio}</p>
- <p>Disponible: ${stock} piezas</p>
- <button onclick="addToCart('${nombre}',${precio},${stock})">Agregar</button>
- </div>`;
- });
-
- document.getElementById("products").innerHTML=html;
+const productDiv=document.createElement("div");
+productDiv.className="product";
+productDiv.innerHTML=`<img src="${imagen}">
+<h2>${nombre}</h2>
+<p>Precio: $${precio}</p>
+<p>Stock: ${stock} piezas disponibles</p>
+<p>Descripción: ${descripcion}</p>
+<p>Categoria: ${categoria}</p>
+<button class="add-btn">Agregar al carrito</button>`;
+productDiv.querySelector(".add-btn").addEventListener("click",()=>{addToCart(nombre,precio,stock);});
+productsDiv.appendChild(productDiv);
+});
 }
 
-function addToCart(name,price,stock){
- let count=cart.filter(i=>i.name===name).length;
-
- if(count>=stock){
-  alert("No hay más stock");
-  return;
- }
-
- cart.push({name,price});
- renderCart();
- document.getElementById("cart").classList.add("open");
+function addToCart(nombre,precio,stock){
+let count=cart.filter(i=>i.nombre===nombre).length;
+if(count>=stock){alert("No hay más stock"); return;}
+cart.push({nombre,precio});
+renderCart();
+document.getElementById("cart").classList.add("open");
 }
+
+function removeFromCart(index){cart.splice(index,1); renderCart();}
 
 function renderCart(){
- let html="",total=0;
+const cartItemsDiv=document.getElementById("cart-items"); cartItemsDiv.innerHTML="";
+let subtotal=0;
+cart.forEach((item,index)=>{subtotal+=item.precio;
+const p=document.createElement("p");
+p.innerHTML=`${item.nombre} - $${item.precio} <button class="remove-btn" onclick="removeFromCart(${index})">❌</button>`;
+cartItemsDiv.appendChild(p);});
+let total=subtotal+shipping;
+document.getElementById("total").textContent=total.toFixed(2);
 
- cart.forEach((i,index)=>{
-  total+=i.price;
-  html+=`${i.name} $${i.price} <button onclick="remove(${index})">❌</button><br>`;
- });
-
- total+=shipping;
-
- document.getElementById("cart-items").innerHTML=html;
- document.getElementById("total").innerText=total;
-
- let msg="Hola quiero comprar:%0A";
- cart.forEach(i=>msg+=i.name+" $"+i.price+"%0A");
- msg+="Total:"+total;
-
- document.getElementById("checkout").href="https://wa.me/524421311997?text="+msg;
+let msg="Hola,%20quiero%20comprar%20estos%20perfumes:%0A";
+cart.forEach((item,i)=>{msg+=`${i+1}. ${item.nombre} - $${item.precio}%0A`;});
+msg+=`Subtotal: $${subtotal}%0AEnvío: $${shipping}%0ATotal: $${total.toFixed(2)}`;
+document.getElementById("checkout").href=`https://wa.me/524421311997?text=${msg}`;
 }
 
-function remove(i){cart.splice(i,1);renderCart();}
+document.getElementById("cart-toggle").addEventListener("click",()=>{document.getElementById("cart").classList.toggle("open");});
+document.getElementById("cart-close").addEventListener("click",()=>{document.getElementById("cart").classList.remove("open");});
 
-document.getElementById("cart-toggle").onclick=
-()=>document.getElementById("cart").classList.toggle("open");
+function filterCategory(cat){if(cat==="All") filteredData=productsData; else filteredData=productsData.filter(p=>p["Categoria"]===cat); renderProducts(filteredData);}
 
-document.getElementById("cart-close").onclick=
-()=>document.getElementById("cart").classList.remove("open");
+// Reviews
+let reviewsData=JSON.parse(localStorage.getItem("reviews")||"[]");
+function renderReviews(){const reviewsList=document.getElementById("reviews-list"); reviewsList.innerHTML=""; reviewsData.forEach(r=>{
+const div=document.createElement("div"); div.className="review"; div.innerHTML=`<b>${r.nombre}</b> ${"⭐".repeat(r.estrellas)}<br>${r.comentario}`; reviewsList.appendChild(div);});}
+renderReviews();
 
-function filterCategory(cat){
- if(cat=="All") renderProducts(productsData);
- else renderProducts(productsData.filter(p=>p["Categoria"]==cat));
-}
-
+document.getElementById("submit-review").addEventListener("click",()=>{
+const nombre=document.getElementById("review-name").value.trim();
+const comentario=document.getElementById("review-comment").value.trim();
+const estrellas=parseInt(document.getElementById("review-stars").value);
+if(nombre && comentario){reviewsData.push({nombre,comentario,estrellas}); localStorage.setItem("reviews",JSON.stringify(reviewsData)); renderReviews();
+document.getElementById("review-name").value=""; document.getElementById("review-comment").value=""; alert("¡Gracias por tu reseña! ✅");} else alert("Por favor completa todos los campos.");
+});
 </script>
 
 </body>
