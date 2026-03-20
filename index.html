@@ -5,22 +5,23 @@
 <title>Perfume Árabe Original Importación</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-body {font-family:Arial; background:#0c0c0c; color:white; margin:0;}
+body {font-family:Arial; background:#0c0c0c; color:white; margin:0; transition:0.3s;}
 
 /* HEADER */
-header {display:flex; justify-content:space-between; padding:15px; background:#111; border-bottom:2px solid gold; align-items:center;}
-header h1 {color:gold; font-size:18px;}
+header {display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; padding:15px; background:#111; border-bottom:2px solid gold;}
+header h1 {color:gold; font-size:18px; margin:5px 0;}
+.header-right {display:flex; flex-wrap:wrap; align-items:center;}
 .header-right a, .header-right span {
-  margin-left:10px; padding:5px 10px; border-radius:5px; font-weight:bold; text-decoration:none; transition:0.3s;
+  margin:5px 5px 0 0; padding:5px 10px; border-radius:5px; font-weight:bold; text-decoration:none; transition:0.3s;
 }
 .instagram {background:#E1306C; color:white;}
-.instagram:hover {background:#ff2d82;}
+.instagram:hover {background:#ff2d82; transform:scale(1.05);}
 .facebook {background:#3b5998; color:white;}
-.facebook:hover {background:#4a69c7;}
+.facebook:hover {background:#4a69c7; transform:scale(1.05);}
 .whatsapp {background:#25D366; color:white;}
-.whatsapp:hover {background:#39e174;}
-.direccion {background:gold; color:black; cursor:pointer;}
-.direccion:hover {opacity:0.8;}
+.whatsapp:hover {background:#39e174; transform:scale(1.05);}
+.direccion {background:gold; color:black; cursor:pointer; transition:0.3s;}
+.direccion:hover {opacity:0.8; transform:scale(1.02);}
 
 /* CATEGORIES */
 #categories {text-align:center; margin:15px;}
@@ -30,28 +31,32 @@ button:hover {background:linear-gradient(45deg,#ffd700,gold); transform:scale(1.
 /* PRODUCTS */
 #products {display:grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap:15px; padding:10px;}
 .product {background:#111; border:1px solid gold; padding:10px; text-align:center; border-radius:8px; transition:0.3s; box-shadow:0 4px 8px rgba(255,215,0,0.3);}
-.product:hover {box-shadow:0 8px 16px rgba(255,215,0,0.5);}
-.product img {width:180px; border-radius:5px;}
+.product:hover {box-shadow:0 8px 16px rgba(255,215,0,0.5); transform:translateY(-5px);}
+.product img {width:100%; max-width:180px; border-radius:5px; transition:0.3s;}
 .product h2 {margin:10px 0; font-size:16px;}
 .product p {margin:5px 0;}
 .product button {padding:8px 12px; margin-top:8px; border:none; border-radius:5px; background:linear-gradient(45deg,#00BFFF,#1E90FF); color:white; font-weight:bold; cursor:pointer; transition:0.3s;}
 .product button:hover {background:linear-gradient(45deg,#1E90FF,#00BFFF); transform:scale(1.05);}
 
 /* CART */
-#cart-toggle {position:fixed; bottom:20px; right:20px; background:#00BFFF; color:white; padding:20px; border-radius:50%; font-size:26px; cursor:pointer; transition:0.3s;}
+#cart-toggle {position:fixed; bottom:20px; right:20px; background:#00BFFF; color:white; padding:20px; border-radius:50%; font-size:26px; cursor:pointer; transition:0.3s; z-index:1000;}
 #cart-toggle:hover {transform:scale(1.1);}
-#cart {position:fixed; right:-350px; top:10px; width:300px; background:#222; padding:10px; transition:0.5s; z-index:999; border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.5);}
+#cart {position:fixed; right:-350px; top:10px; width:300px; background:#222; padding:10px; transition:right 0.5s ease; z-index:999; border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.5);}
 #cart.open {right:10px;}
-#cart-close {background:red; color:white; border:none; padding:5px; cursor:pointer; width:100%; margin-bottom:10px;}
+#cart-close {background:red; color:white; border:none; padding:5px; cursor:pointer; width:100%; margin-bottom:10px; border-radius:5px;}
 #cart button {margin-top:5px; border-radius:5px;}
 
 /* REVIEWS */
 #reviews {padding:10px; margin:20px auto; max-width:900px;}
 .review {border-bottom:1px solid gold; margin:8px 0; padding-bottom:5px;}
-input, select {margin:5px 0; padding:5px; border-radius:5px; border:none; width:100%;}
+input, select {margin:5px 0; padding:5px; border-radius:5px; border:none; width:100%; transition:0.3s;}
+input:focus, select:focus {outline:none; box-shadow:0 0 5px gold;}
 
 /* RESPONSIVE */
-@media(max-width:500px){ .product img{width:100%;} }
+@media(max-width:600px){
+  header {flex-direction:column; align-items:flex-start;}
+  #products {grid-template-columns: repeat(auto-fit,minmax(150px,1fr));}
+}
 </style>
 </head>
 
